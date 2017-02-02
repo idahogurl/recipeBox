@@ -1,0 +1,42 @@
+body {
+    font-family: "Roboto", sans-serif;
+    margin: 20px;
+}
+.title {
+    //create variable or mixin
+    font: 60px "Kaushan Script", cursive;
+    position: absolute;
+}
+
+.ingredients {
+    font: 20px "Kaushan Script", cursive;
+    position: absolute;
+    top: 110px;
+}
+.add-btn {
+    font-family: "Roboto", sans-serif;
+    color: black;
+}
+ul {
+    width: 500px;
+    list-style-type: none;
+    li {
+        padding: 20px;
+        //TODO: make mix-in for gradients
+        /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#7a7a7a+0,dbdbdb+6,f4f4f4+50,d1d1d1+94,7a7a7a+100 */
+        background: #7a7a7a; /* Old browsers */
+        background: -moz-linear-gradient(top, #dbdbdb 0%, #f4f4f4 50%, #d1d1d1 100%); /* FF3.6-15 */
+        background: -webkit-linear-gradient(top, #dbdbdb 0%, #f4f4f4 50%, #d1d1d1 100%); /* Chrome10-25,Safari5.1-6 */
+        background: linear-gradient(to bottom, #dbdbdb 0%, #f4f4f4 50%, #d1d1d1 100%); /* W3C, IE10+, FF16+, Chrome26+, Opera12+, Safari7+ */
+        filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7a7a7a', endColorstr='#7a7a7a',GradientType=0 ); /* IE6-9 */
+    }
+    .header {
+        background: darkred !important;
+        color: white;
+        font: 14pt "Kaushan Script", cursive;
+    }
+}
+
+img {
+    width: 99%;
+}
