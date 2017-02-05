@@ -4,32 +4,53 @@
 <head>
     <link href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
     <link href="https://fonts.googleapis.com/css?family=Roboto|Kaushan+Script" rel="stylesheet">
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js" integrity="sha256-hVVnYaiADRTO2PzUGmuLJr8BLUSjGIZsDYGmIJLv2b8=" crossorigin="anonymous"></script>
     <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
 </head>
 
 <body>
 <div class="container">
-    
-    <div class="row">
-      
-    <div class="col-xs-8">
-        
-        <div class="title">Recipe</div>
-        <div class="ingredients">Ingredients</div>
-        <img src="http://i373.photobucket.com/albums/oo177/idahogurl99/bread_zps2viurxlw.png"/>
-    </div>
-      <div class="col-xs-3">
+      <img src="../iphoneBlack.png"/>
+        <div class="screen">
         <ul>
-            <li class="header">Recipe Box<button class="btn add-btn pull-right">Add Recipe</button></li>
-            <li><a href="#">Cookie Salad</a></li>
-            <li><a href="#">Chicken Enchiladas</a></li>
-            <li><a href="#">Alfredo Sauce</a></li>
-            <li>&nbsp;</li>
-            <li>&nbsp;</li>
-            <li>&nbsp;</li>
-        </ul>
-        </div> 
- </div>
+            <li class="header">Recipe Box<button class="btn btn-default btn-add pull-right">Add Recipe</button></li>
+            <li>
+              <div class="recipe">
+                <label>Recipe:</label> <input type="text" value="Cookie Salad" placeholder="Recipe Name" class="recipe-name"/>
+                <a data-toggle="collapse" href="#collapseExample">Cookie Salad</a>
+              </div>
+              <div class="ingredients collapse" id="collapseExample">
+                <ul class="list-group">
+                  <li class="list-group-item">Striped Chocolate Shortbread Cookies</li>
+                  <li class="list-group-item">Buttermilk</li>
+                  <li class="list-group-item">Whipped Cream</li>
+                 <li class="list-group-item">Vanilla Pudding</li>
+                 <li class="list-group-item">Mandrian Oranges</li>
+                 <li class="list-group-item">Pineapple Tidbits</li>
+                </ul>
+                <div>
+                  <label>Ingredients</label>
+                  <textarea placeholder="Enter Ingredients,Seperated,By Commas">Striped Chocolate Shortbread Cookies, Buttermilk, Whipped Cream, Vanilla Pudding, 
+                    Mandrian Oranges, Pineapple Tidbits</textarea>
+                    <button class="btn btn-info">Save</button>
+                    <button class="btn btn-default">Cancel</button>
+                    </div>
+              <button class="btn btn-danger">Delete</button>
+              <button class="btn btn-default">Edit</button>
+              </div>
+            </li>
+            <li><div class="recipe"><a href="#">Chicken Enchiladas</a></li>
+            <li><div class="recipe"><a href="#">Alfredo Sauce</a></li>
+            <li><div class="recipe">&nbsp;</div></li>
+            <li><div class="recipe">&nbsp;</div></li>
+            <li><div class="recipe">&nbsp;</div></li>
+            <li><div class="recipe">&nbsp;</div></li>
+            <li><div class="recipe">&nbsp;</div></li>
+            <li><div class="recipe">&nbsp;</div></li>
+            <li><div class="recipe">&nbsp;</div></li>
+            <li><div class="recipe">&nbsp;</div></li>
+            <li><div class="recipe">&nbsp;</div></li>
+        </ul></div>
     <div id="recipeBox"></div>
     <div id="myModal" class="modal fade" role="dialog">
   <div class="modal-dialog">
