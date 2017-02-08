@@ -135,7 +135,10 @@ class RecipeBox extends Component<any,any> {
 
     handleEdit(e) {
         let index:number = this.getRecipeIndex(e.target.id, "edit_");
-        this.setState({editRecipe: this.state.recipes[index], showEditorModal: true});
+        let recipe:Recipe = this.state.recipes[index];
+        let editRecipe:Recipe = {id: recipe.id, name: recipe.name, ingredients: recipe.ingredients};
+        
+        this.setState({editRecipe: editRecipe, showEditorModal: true});
     }
 
     handleRecipeChange(e) {
@@ -165,7 +168,7 @@ class RecipeBox extends Component<any,any> {
     }
 
     handleAdd(e) {
-        this.setState({ recipe: {recipeId: -1, name:"", ingredients:""}, showEditorModal: true });
+        this.setState({ editRecipe: {recipeId: -1, name:"", ingredients:""}, showEditorModal: true });
     }
 
     handleCancel(e) {

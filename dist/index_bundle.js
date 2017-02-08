@@ -150,7 +150,9 @@
 	    }
 	    handleEdit(e) {
 	        let index = this.getRecipeIndex(e.target.id, "edit_");
-	        this.setState({ editRecipe: this.state.recipes[index], showEditorModal: true });
+	        let recipe = this.state.recipes[index];
+	        let editRecipe = { id: recipe.id, name: recipe.name, ingredients: recipe.ingredients };
+	        this.setState({ editRecipe: editRecipe, showEditorModal: true });
 	    }
 	    handleRecipeChange(e) {
 	        let recipe = this.state.editRecipe;
@@ -171,7 +173,7 @@
 	        this.saveToLocalStorage(recipes);
 	    }
 	    handleAdd(e) {
-	        this.setState({ recipe: { recipeId: -1, name: "", ingredients: "" }, showEditorModal: true });
+	        this.setState({ editRecipe: { recipeId: -1, name: "", ingredients: "" }, showEditorModal: true });
 	    }
 	    handleCancel(e) {
 	        this.setState({ showEditorModal: false });
@@ -21976,7 +21978,7 @@
 
 
 	// module
-	exports.push([module.id, "body {\n  font-family: \"Roboto\", sans-serif;\n  margin: 20px; }\n\n#screen {\n  border: 1px solid #d1d1d1; }\n\n.recipe-name {\n  width: 277px; }\n\n.btn-add {\n  font-family: \"Roboto\", sans-serif;\n  color: black; }\n\ntextarea {\n  width: 270px;\n  height: 270px; }\n\n.ingredients {\n  background-color: white;\n  padding: 10px; }\n  .ingredients label {\n    font-weight: bold; }\n\nul {\n  list-style-type: none;\n  padding: 0px; }\n  ul .header {\n    background: royalblue !important;\n    color: white;\n    font: 14pt \"Kaushan Script\", cursive;\n    padding: 20px; }\n  ul li .recipe {\n    padding: 20px;\n    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#7a7a7a+0,dbdbdb+6,f4f4f4+50,d1d1d1+94,7a7a7a+100 */\n    background: #7a7a7a;\n    /* Old browsers */\n    background: -moz-linear-gradient(top, #dbdbdb 0%, #f4f4f4 50%, #d1d1d1 100%);\n    /* FF3.6-15 */\n    background: -webkit-linear-gradient(top, #dbdbdb 0%, #f4f4f4 50%, #d1d1d1 100%);\n    background: -linear-gradient(to bottom, #dbdbdb 0%, #f4f4f4 50%, #d1d1d1 100%);\n    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7a7a7a', endColorstr='#7a7a7a',GradientType=0 );\n    /* IE6-9 */ }\n", ""]);
+	exports.push([module.id, "body {\n  font-family: \"Roboto\", sans-serif;\n  margin: 20px; }\n\n#screen {\n  border: 1px solid #d1d1d1; }\n\n.recipe-name {\n  width: 277px; }\n\n.btn-add {\n  font-family: \"Roboto\", sans-serif;\n  color: black; }\n\ntextarea {\n  width: 270px;\n  height: 270px; }\n\n.ingredients {\n  background-color: white;\n  padding: 10px; }\n  .ingredients label {\n    font-weight: bold; }\n\nul {\n  margin: 0;\n  list-style-type: none;\n  padding: 0px; }\n  ul .header {\n    background: royalblue !important;\n    color: white;\n    font: 14pt \"Kaushan Script\", cursive;\n    padding: 20px; }\n  ul li .recipe {\n    padding: 20px;\n    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#7a7a7a+0,dbdbdb+6,f4f4f4+50,d1d1d1+94,7a7a7a+100 */\n    background: #7a7a7a;\n    /* Old browsers */\n    background: -moz-linear-gradient(top, #dbdbdb 0%, #f4f4f4 50%, #d1d1d1 100%);\n    /* FF3.6-15 */\n    background: -webkit-linear-gradient(top, #dbdbdb 0%, #f4f4f4 50%, #d1d1d1 100%);\n    background: -linear-gradient(to bottom, #dbdbdb 0%, #f4f4f4 50%, #d1d1d1 100%);\n    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7a7a7a', endColorstr='#7a7a7a',GradientType=0 );\n    /* IE6-9 */ }\n", ""]);
 
 	// exports
 

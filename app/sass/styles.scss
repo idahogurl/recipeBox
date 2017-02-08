@@ -25,11 +25,11 @@ textarea {
         font-weight: bold;
     }
 }
-
 @mixin gradient($browserProperty, $direction) {
   background: #{$browserProperty + "("}$direction, #dbdbdb 0%, #f4f4f4 50%, #d1d1d1 100%#{")"};
 }
 ul {
+    margin: 0;
     list-style-type: none;
     padding: 0px;
     .header {
