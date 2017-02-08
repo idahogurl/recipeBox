@@ -20,36 +20,31 @@ const ReactDOM = require('react-dom');
 require('./sass/styles.scss');
 
 import {Component} from 'react';
+import {Modal} from 'react-bootstrap';
 
-class IngredientsEditor extends Component<any,any> {
-    render() {
-        return (<textarea>{this.props.ingredients}</textarea>);
-    }
-}
 class IngredientList extends Component<any,any> {
     render() {
-        debugger;
-         let i: number = 0;
-         let ingredients = this.props.ingredients.split(",")
+        let i: number = 0;
+        let ingredients = this.props.ingredients.split(",")
             .map(ingredient => {
                 i++;
                 return (
                 <li className="list-group-item" key={i}>
                     {ingredient}
-                    <IngredientsEditor ingredients={this.props.ingredients} className="hidden" />
                 </li>);
             }
             );
 
         return (
-            <div className="ingredients collapse" id={this.props.recipeId}>
-                    <label>Ingredients</label>
-                    <ul className="list-group">
-                    {ingredients}
-                    </ul>
-                    <button className="btn btn-danger" onClick={this.props.deleteOnClick} id={"delete_" + this.props.recipeId}>Delete</button>&nbsp;
-                    <button className="btn btn-default" onClick={this.props.editOnClick} id={"edit_" + this.props.recipeId}>Edit</button>
-           </div>
+            <div className="collapse ingredients" id={this.props.recipeId}>
+                <label>Ingredients</label>
+                <ul className="list-group">
+                {ingredients}
+                </ul>
+                <button className="btn btn-danger" onClick={this.props.deleteOnClick} id={"delete_" + this.props.recipeId}>Delete</button>&nbsp;
+                <button className="btn btn-default" onClick={this.props.editOnClick} id={"edit_" + this.props.recipeId} 
+                    data-toggle="modal" data-target="#editorModal">Edit</button>
+            </div>
         );
     }
 }
@@ -65,8 +60,7 @@ class RecipeList extends Component<any,any> {
                 </div>
                 <IngredientList ingredients={this.props.ingredients} recipeId={this.props.recipeId} 
                     deleteOnClick={this.props.deleteOnClick} editOnClick={this.props.editOnClick}
-                    key={"ingredients_" + this.props.recipeId} />
-                
+                    key={"ingredients_" + this.props.recipeId}/>
             </li>
         );
     }
@@ -83,42 +77,99 @@ class Recipe {
     id: number;
 }
 
+class RecipeEditorModal extends Component<any,any> {
+    render() {
+        debugger;
+        return (
+            <Modal show={this.props.show} onHide={this.props.cancelOnClick} bsSize="small">
+                <Modal.Header>
+                    <Modal.Title>Recipe</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <label>Name</label>
+                    <div><input type="text" id="name" value={this.props.recipe.name} onChange={this.props.recipeOnChange} /></div>
+                    <label style={{marginTop: 20}}>Ingredients</label>
+                    <div><textarea id="ingredients" value={this.props.recipe.ingredients} onChange={this.props.recipeOnChange}/></div>
+                </Modal.Body>
+                <Modal.Footer>
+                    <button className="btn btn-info" onClick={this.props.saveOnClick} id={"save_" + this.props.recipe.id}>Save</button>&nbsp;
+                    <button className="btn btn-default" onClick={this.props.cancelOnClick}>Cancel</button>
+                </Modal.Footer>
+            </Modal>
+        );
+    }
+}
+
 class RecipeBox extends Component<any,any> {
     constructor() {
         super();
 
-        this.state = {recipes : []};
+        this.state = {recipes : [], recipe: {recipeId: -1, name:"", ingredients:""}, 
+            editRecipe: {recipeId: -1, name:"", ingredients:""}, showEditorModal: false};
 
         this.handleDelete = this.handleDelete.bind(this);
         this.handleEdit = this.handleEdit.bind(this);
+        this.handleSave = this.handleSave.bind(this);
+        this.handleCancel = this.handleCancel.bind(this);
+        this.handleAdd = this.handleAdd.bind(this);
+        this.handleRecipeChange = this.handleRecipeChange.bind(this);
     }
+
     handleDelete(e) {
-        debugger;
         //find in array and remove it
-        let index:number = this.state.recipes.findIndex( recipe => {
-            debugger;
-            return e.target.id == ("delete_" + recipe.id);
-        });
+        let index:number = this.getRecipeIndex(e.target.id, "delete_");
+
         let recipes = this.state.recipes;
         recipes.splice(index, 1);
+        
         this.setState({recipes: recipes});
         this.saveToLocalStorage(recipes);
     }
 
-    handleEdit(e) {
+    getRecipeIndex(id, preText): number {
+        let index:number = this.state.recipes.findIndex(recipe => {
+            return id == (preText + recipe.id);
+        });
+        return index;
+    }
 
+    handleEdit(e) {
+        let index:number = this.getRecipeIndex(e.target.id, "edit_");
+        this.setState({editRecipe: this.state.recipes[index], showEditorModal: true});
+    }
+
+    handleRecipeChange(e) {
+        let recipe = this.state.editRecipe;
+        if (e.target.id === "name") 
+        {
+            recipe.name = e.target.value;
+        } 
+        else if (e.target.id === "ingredients") 
+        {      
+            recipe.ingredients = e.target.value;
+        }
+
+        this.setState({editRecipe: recipe});
     }
 
     handleSave(e) {
-
-    }
-
-    handleCancel(e) {
-
+        let index:number = this.getRecipeIndex(e.target.id, "save_");
+        
+        let recipes = this.state.recipes;
+        
+        let recipe = this.state.editRecipe;
+        recipes[index] = recipe;
+        
+        this.setState({recipes: recipes, showEditorModal: false, editRecipe: {recipeId: -1, name:"", ingredients:""}});
+        this.saveToLocalStorage(recipes);
     }
 
     handleAdd(e) {
+        this.setState({ recipe: {recipeId: -1, name:"", ingredients:""}, showEditorModal: true });
+    }
 
+    handleCancel(e) {
+        this.setState({ showEditorModal: false });
     }
 
     saveToLocalStorage(recipes: Recipe[])
@@ -145,57 +196,23 @@ class RecipeBox extends Component<any,any> {
         return JSON.parse(localStorage.getItem("recipes"));
     }
 
-    render() {                
-        debugger;
+    render() {
         let recipeList = this.state.recipes.map(recipe => {
             return <RecipeList name={recipe.name} ingredients={recipe.ingredients} key={recipe.id} recipeId={recipe.id} 
-            deleteOnClick={this.handleDelete} editOnClick={this.handleEdit}
-            />
+            deleteOnClick={this.handleDelete} editOnClick={this.handleEdit} />
         });
 
         return (
             <div>
-        <ul>
-            <li className="header">Recipe Box
-                <button className="btn btn-default btn-add pull-right">Add Recipe</button>
-            </li>
-            {recipeList}
-            {/*<li>
-                <div className="recipe">
-                    <label>Recipe:</label>
-                    <input type="text" value="Cookie Salad" placeholder="Recipe Name" className="recipe-name"/>
-                    <a data-toggle="collapse" href="#collapseExample">Cookie Salad</a>
-                </div>
-                <div className="ingredients collapse" id="collapseExample">
-                    <ul className="list-group">
-                    <li className="list-group-item">Striped Chocolate Shortbread Cookies</li>
-                    <li className="list-group-item">Buttermilk</li>
-                    <li className="list-group-item">Whipped Cream</li>
-                    <li className="list-group-item">Vanilla Pudding</li>
-                    <li className="list-group-item">Mandrian Oranges</li>
-                    <li className="list-group-item">Pineapple Tidbits</li>
-                    </ul>
-                  <label>Ingredients</label>
-                  <textarea placeholder="Enter Ingredients,Seperated,By Commas">Striped Chocolate Shortbread Cookies, Buttermilk, Whipped Cream, Vanilla Pudding, 
-                    Mandrian Oranges, Pineapple Tidbits</textarea>
-                    <button className="btn btn-info">Save</button>
-                    <button className="btn btn-default">Cancel</button>
-                   
-              </div>
-            </li>
-            <li><div className="recipe"><a href="#">Chicken Enchiladas</a></div></li>
-            <li><div className="recipe"><a href="#">Alfredo Sauce</a></div></li>
-            <li><div className="recipe">&nbsp;</div></li>
-            <li><div className="recipe">&nbsp;</div></li>
-            <li><div className="recipe">&nbsp;</div></li>
-            <li><div className="recipe">&nbsp;</div></li>
-            <li><div className="recipe">&nbsp;</div></li>
-            <li><div className="recipe">&nbsp;</div></li>
-            <li><div className="recipe">&nbsp;</div></li>
-            <li><div className="recipe">&nbsp;</div></li>
-            <li><div className="recipe">&nbsp;</div></li>*/}
-        </ul>
-        </div>
+                <RecipeEditorModal saveOnClick={this.handleSave} cancelOnClick ={this.handleCancel} 
+                    recipe={this.state.editRecipe} show={this.state.showEditorModal} recipeOnChange={this.handleRecipeChange}/>
+                <ul>
+                    <li className="header">Recipe Box
+                        <button className="btn btn-default btn-add pull-right" onClick={this.handleAdd}>Add Recipe</button>
+                    </li>
+                    {recipeList}
+                </ul>
+            </div>
         );
     }
 }
