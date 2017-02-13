@@ -37,9 +37,9 @@ class IngredientList extends react_1.Component {
 }
 class RecipeList extends react_1.Component {
     render() {
-        return (React.createElement("li", null,
+        return (React.createElement("li", { className: "panel" },
             React.createElement("div", { className: "recipe" },
-                React.createElement("a", { "data-toggle": "collapse", href: "#" + this.props.recipeId }, this.props.name)),
+                React.createElement("a", { "data-toggle": "collapse", "data-parent": "#recipeList", href: "#" + this.props.recipeId }, this.props.name)),
             React.createElement(IngredientList, { ingredients: this.props.ingredients, recipeId: this.props.recipeId, deleteOnClick: this.props.deleteOnClick, editOnClick: this.props.editOnClick, key: "ingredients_" + this.props.recipeId })));
     }
 }
@@ -52,7 +52,6 @@ class Recipe {
 }
 class RecipeEditorModal extends react_1.Component {
     render() {
-        debugger;
         return (React.createElement(react_bootstrap_1.Modal, { show: this.props.show, onHide: this.props.cancelOnClick, bsSize: "small" },
             React.createElement(react_bootstrap_1.Modal.Header, null,
                 React.createElement(react_bootstrap_1.Modal.Title, null, "Recipe")),
@@ -113,9 +112,19 @@ class RecipeBox extends react_1.Component {
     }
     handleSave(e) {
         let index = this.getRecipeIndex(e.target.id, "save_");
+
         let recipes = this.state.recipes;
         let recipe = this.state.editRecipe;
-        recipes[index] = recipe;
+
+        if (index === -1) {
+            //get next autonumber
+            recipe.id = recipes.reduce((acc, val) => (acc.id > val.id) ? acc.id : val.id) + 1;
+            recipes.push(recipe);
+        }
+        else {
+            recipes[index] = recipe;
+        }
+        
         this.setState({ recipes: recipes, showEditorModal: false, editRecipe: { recipeId: -1, name: "", ingredients: "" } });
         this.saveToLocalStorage(recipes);
     }
@@ -133,12 +142,14 @@ class RecipeBox extends react_1.Component {
         this.setState({ recipes: this.loadLocalStorage() });
     }
     initialize() {
-        let recipesToSave = new Array();
-        recipesToSave.push(new Recipe(1, "Cookie Salad", "Striped Chocolate Shortbread Cookies,Buttermilk,Whipped Cream,Vanilla Pudding," +
-            "Mandrian Oranges,Pineapple Tidbits"));
-        recipesToSave.push(new Recipe(2, "Chicken Enchiladas", ""));
-        recipesToSave.push(new Recipe(3, "Alfredo Sauce", ""));
-        this.saveToLocalStorage(recipesToSave);
+        if (localStorage.getItem("recipes") === null) {
+            let recipesToSave = new Array();
+            recipesToSave.push(new Recipe(1, "Cookie Salad", "Striped Chocolate Shortbread Cookies,Buttermilk,Whipped Cream,Vanilla Pudding," +
+                "Mandrian Oranges,Pineapple Tidbits"));
+            recipesToSave.push(new Recipe(2, "Chicken Enchiladas", "Flour Tortillas,Sour Cream,Diced Green Chiles,Chicken Breast,Grated Cheese,Cream of Chicken Soup"));
+            recipesToSave.push(new Recipe(3, "Alfredo Sauce", ""));
+            this.saveToLocalStorage(recipesToSave);
+        }
     }
     loadLocalStorage() {
         return JSON.parse(localStorage.getItem("recipes"));
@@ -149,7 +160,7 @@ class RecipeBox extends react_1.Component {
         });
         return (React.createElement("div", null,
             React.createElement(RecipeEditorModal, { saveOnClick: this.handleSave, cancelOnClick: this.handleCancel, recipe: this.state.editRecipe, show: this.state.showEditorModal, recipeOnChange: this.handleRecipeChange }),
-            React.createElement("ul", null,
+            React.createElement("ul", { id: "recipeList" },
                 React.createElement("li", { className: "header" },
                     "Recipe Box",
                     React.createElement("button", { className: "btn btn-default btn-add pull-right", onClick: this.handleAdd }, "Add Recipe")),

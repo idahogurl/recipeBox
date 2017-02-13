@@ -52,11 +52,11 @@ class IngredientList extends Component<any,any> {
 class RecipeList extends Component<any,any> {
     render() {
         return (
-            <li>
+            <li className="panel">
                 <div className="recipe">
                     {/*<label>Recipe:</label>*/}
                     {/*<input type="text" value="Cookie Salad" placeholder="Recipe Name" className="recipe-name"/>*/}
-                    <a data-toggle="collapse" href={"#" + this.props.recipeId}>{this.props.name}</a>
+                    <a data-toggle="collapse" data-parent="#recipeList" href={"#" + this.props.recipeId}>{this.props.name}</a>
                 </div>
                 <IngredientList ingredients={this.props.ingredients} recipeId={this.props.recipeId} 
                     deleteOnClick={this.props.deleteOnClick} editOnClick={this.props.editOnClick}
@@ -78,8 +78,7 @@ class Recipe {
 }
 
 class RecipeEditorModal extends Component<any,any> {
-    render() {
-        debugger;
+    render() {        
         return (
             <Modal show={this.props.show} onHide={this.props.cancelOnClick} bsSize="small">
                 <Modal.Header>
@@ -157,11 +156,18 @@ class RecipeBox extends Component<any,any> {
 
     handleSave(e) {
         let index:number = this.getRecipeIndex(e.target.id, "save_");
-        
+        debugger;
+
         let recipes = this.state.recipes;
         
         let recipe = this.state.editRecipe;
-        recipes[index] = recipe;
+        if (index === -1) { //add recipe
+            //get next autonumber
+            recipe.id = recipes.reduce((acc, val) => (acc.id > val.id) ? acc.id : val.id) + 1;           
+            recipes.push(recipe);
+        } else { //edd recipe
+            recipes[index] = recipe;
+        }
         
         this.setState({recipes: recipes, showEditorModal: false, editRecipe: {recipeId: -1, name:"", ingredients:""}});
         this.saveToLocalStorage(recipes);
@@ -186,13 +192,15 @@ class RecipeBox extends Component<any,any> {
     }
 
     initialize() {
-        let recipesToSave = new Array<Recipe>();
-        recipesToSave.push(new Recipe(1, "Cookie Salad","Striped Chocolate Shortbread Cookies,Buttermilk,Whipped Cream,Vanilla Pudding," +
-            "Mandrian Oranges,Pineapple Tidbits"));
-        recipesToSave.push(new Recipe(2, "Chicken Enchiladas", ""));
-        recipesToSave.push(new Recipe(3, "Alfredo Sauce", ""));
+        if (localStorage.getItem("recipes") === null) {
+            let recipesToSave = new Array<Recipe>();
+            recipesToSave.push(new Recipe(1, "Cookie Salad","Striped Chocolate Shortbread Cookies,Buttermilk,Whipped Cream,Vanilla Pudding," +
+                "Mandrian Oranges,Pineapple Tidbits"));
+            recipesToSave.push(new Recipe(2, "Chicken Enchiladas", "Flour Tortillas,Sour Cream,Diced Green Chiles,Chicken Breast,Grated Cheese,Cream of Chicken Soup"));
+            recipesToSave.push(new Recipe(3, "Alfredo Sauce", ""));
 
-        this.saveToLocalStorage(recipesToSave);
+            this.saveToLocalStorage(recipesToSave);
+        }
     }
     
     loadLocalStorage() {
@@ -209,7 +217,7 @@ class RecipeBox extends Component<any,any> {
             <div>
                 <RecipeEditorModal saveOnClick={this.handleSave} cancelOnClick ={this.handleCancel} 
                     recipe={this.state.editRecipe} show={this.state.showEditorModal} recipeOnChange={this.handleRecipeChange}/>
-                <ul>
+                <ul id="recipeList">
                     <li className="header">Recipe Box
                         <button className="btn btn-default btn-add pull-right" onClick={this.handleAdd}>Add Recipe</button>
                     </li>

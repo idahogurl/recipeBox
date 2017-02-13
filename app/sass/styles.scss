@@ -1,8 +1,9 @@
-
 body {
     font-family: "Roboto", sans-serif;
-    margin: 20px;
-    // background-color: #FF916A;
+    margin: 20px;   
+    &.modal-open {
+      padding-right: 0 !important; //stop content below modal from shifting left
+    }
 }
 #screen {
     border: 1px solid #d1d1d1;
@@ -47,6 +48,11 @@ ul {
             @include gradient("-webkit-linear-gradient", top);
             @include gradient("-linear-gradient", to bottom);
             filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7a7a7a', endColorstr='#7a7a7a',GradientType=0 ); /* IE6-9 */
+        }
+        &.panel 
+        {
+            margin-bottom: 0 !important;
+            border: none !important;
         }
     }
 }

@@ -90,9 +90,9 @@
 	}
 	class RecipeList extends react_1.Component {
 	    render() {
-	        return (React.createElement("li", null,
+	        return (React.createElement("li", { className: "panel" },
 	            React.createElement("div", { className: "recipe" },
-	                React.createElement("a", { "data-toggle": "collapse", href: "#" + this.props.recipeId }, this.props.name)),
+	                React.createElement("a", { "data-toggle": "collapse", "data-parent": "#recipeList", href: "#" + this.props.recipeId }, this.props.name)),
 	            React.createElement(IngredientList, { ingredients: this.props.ingredients, recipeId: this.props.recipeId, deleteOnClick: this.props.deleteOnClick, editOnClick: this.props.editOnClick, key: "ingredients_" + this.props.recipeId })));
 	    }
 	}
@@ -105,7 +105,6 @@
 	}
 	class RecipeEditorModal extends react_1.Component {
 	    render() {
-	        debugger;
 	        return (React.createElement(react_bootstrap_1.Modal, { show: this.props.show, onHide: this.props.cancelOnClick, bsSize: "small" },
 	            React.createElement(react_bootstrap_1.Modal.Header, null,
 	                React.createElement(react_bootstrap_1.Modal.Title, null, "Recipe")),
@@ -166,9 +165,19 @@
 	    }
 	    handleSave(e) {
 	        let index = this.getRecipeIndex(e.target.id, "save_");
+
 	        let recipes = this.state.recipes;
 	        let recipe = this.state.editRecipe;
-	        recipes[index] = recipe;
+
+	        if (index === -1) {
+	            //get next autonumber
+	            recipe.id = recipes.reduce((acc, val) => (acc.id > val.id) ? acc.id : val.id) + 1;
+	            recipes.push(recipe);
+	        }
+	        else {
+	            recipes[index] = recipe;
+	        }
+	        
 	        this.setState({ recipes: recipes, showEditorModal: false, editRecipe: { recipeId: -1, name: "", ingredients: "" } });
 	        this.saveToLocalStorage(recipes);
 	    }
@@ -186,12 +195,14 @@
 	        this.setState({ recipes: this.loadLocalStorage() });
 	    }
 	    initialize() {
-	        let recipesToSave = new Array();
-	        recipesToSave.push(new Recipe(1, "Cookie Salad", "Striped Chocolate Shortbread Cookies,Buttermilk,Whipped Cream,Vanilla Pudding," +
-	            "Mandrian Oranges,Pineapple Tidbits"));
-	        recipesToSave.push(new Recipe(2, "Chicken Enchiladas", ""));
-	        recipesToSave.push(new Recipe(3, "Alfredo Sauce", ""));
-	        this.saveToLocalStorage(recipesToSave);
+	        if (localStorage.getItem("recipes") === null) {
+	            let recipesToSave = new Array();
+	            recipesToSave.push(new Recipe(1, "Cookie Salad", "Striped Chocolate Shortbread Cookies,Buttermilk,Whipped Cream,Vanilla Pudding," +
+	                "Mandrian Oranges,Pineapple Tidbits"));
+	            recipesToSave.push(new Recipe(2, "Chicken Enchiladas", "Flour Tortillas,Sour Cream,Diced Green Chiles,Chicken Breast,Grated Cheese,Cream of Chicken Soup"));
+	            recipesToSave.push(new Recipe(3, "Alfredo Sauce", ""));
+	            this.saveToLocalStorage(recipesToSave);
+	        }
 	    }
 	    loadLocalStorage() {
 	        return JSON.parse(localStorage.getItem("recipes"));
@@ -202,7 +213,7 @@
 	        });
 	        return (React.createElement("div", null,
 	            React.createElement(RecipeEditorModal, { saveOnClick: this.handleSave, cancelOnClick: this.handleCancel, recipe: this.state.editRecipe, show: this.state.showEditorModal, recipeOnChange: this.handleRecipeChange }),
-	            React.createElement("ul", null,
+	            React.createElement("ul", { id: "recipeList" },
 	                React.createElement("li", { className: "header" },
 	                    "Recipe Box",
 	                    React.createElement("button", { className: "btn btn-default btn-add pull-right", onClick: this.handleAdd }, "Add Recipe")),
@@ -21978,7 +21989,7 @@
 
 
 	// module
-	exports.push([module.id, "body {\n  font-family: \"Roboto\", sans-serif;\n  margin: 20px; }\n\n#screen {\n  border: 1px solid #d1d1d1; }\n\n.recipe-name {\n  width: 277px; }\n\n.btn-add {\n  font-family: \"Roboto\", sans-serif;\n  color: black; }\n\ntextarea {\n  width: 270px;\n  height: 270px; }\n\n.ingredients {\n  background-color: white;\n  padding: 10px; }\n  .ingredients label {\n    font-weight: bold; }\n\nul {\n  margin: 0;\n  list-style-type: none;\n  padding: 0px; }\n  ul .header {\n    background: royalblue !important;\n    color: white;\n    font: 14pt \"Kaushan Script\", cursive;\n    padding: 20px; }\n  ul li .recipe {\n    padding: 20px;\n    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#7a7a7a+0,dbdbdb+6,f4f4f4+50,d1d1d1+94,7a7a7a+100 */\n    background: #7a7a7a;\n    /* Old browsers */\n    background: -moz-linear-gradient(top, #dbdbdb 0%, #f4f4f4 50%, #d1d1d1 100%);\n    /* FF3.6-15 */\n    background: -webkit-linear-gradient(top, #dbdbdb 0%, #f4f4f4 50%, #d1d1d1 100%);\n    background: -linear-gradient(to bottom, #dbdbdb 0%, #f4f4f4 50%, #d1d1d1 100%);\n    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7a7a7a', endColorstr='#7a7a7a',GradientType=0 );\n    /* IE6-9 */ }\n", ""]);
+	exports.push([module.id, "body {\n  font-family: \"Roboto\", sans-serif;\n  margin: 20px; }\n  body.modal-open {\n    padding-right: 0 !important; }\n\n#screen {\n  border: 1px solid #d1d1d1; }\n\n.recipe-name {\n  width: 277px; }\n\n.btn-add {\n  font-family: \"Roboto\", sans-serif;\n  color: black; }\n\ntextarea {\n  width: 270px;\n  height: 270px; }\n\n.ingredients {\n  background-color: white;\n  padding: 10px; }\n  .ingredients label {\n    font-weight: bold; }\n\nul {\n  margin: 0;\n  list-style-type: none;\n  padding: 0px; }\n  ul .header {\n    background: royalblue !important;\n    color: white;\n    font: 14pt \"Kaushan Script\", cursive;\n    padding: 20px; }\n  ul li .recipe {\n    padding: 20px;\n    /* Permalink - use to edit and share this gradient: http://colorzilla.com/gradient-editor/#7a7a7a+0,dbdbdb+6,f4f4f4+50,d1d1d1+94,7a7a7a+100 */\n    background: #7a7a7a;\n    /* Old browsers */\n    background: -moz-linear-gradient(top, #dbdbdb 0%, #f4f4f4 50%, #d1d1d1 100%);\n    /* FF3.6-15 */\n    background: -webkit-linear-gradient(top, #dbdbdb 0%, #f4f4f4 50%, #d1d1d1 100%);\n    background: -linear-gradient(to bottom, #dbdbdb 0%, #f4f4f4 50%, #d1d1d1 100%);\n    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7a7a7a', endColorstr='#7a7a7a',GradientType=0 );\n    /* IE6-9 */ }\n  ul li.panel {\n    margin-bottom: 0 !important;\n    border: none !important; }\n", ""]);
 
 	// exports
 
