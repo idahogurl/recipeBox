@@ -165,10 +165,9 @@
 	    }
 	    handleSave(e) {
 	        let index = this.getRecipeIndex(e.target.id, "save_");
-
+	        debugger;
 	        let recipes = this.state.recipes;
 	        let recipe = this.state.editRecipe;
-
 	        if (index === -1) {
 	            //get next autonumber
 	            recipe.id = recipes.reduce((acc, val) => (acc.id > val.id) ? acc.id : val.id) + 1;
@@ -177,7 +176,6 @@
 	        else {
 	            recipes[index] = recipe;
 	        }
-	        
 	        this.setState({ recipes: recipes, showEditorModal: false, editRecipe: { recipeId: -1, name: "", ingredients: "" } });
 	        this.saveToLocalStorage(recipes);
 	    }
@@ -188,14 +186,14 @@
 	        this.setState({ showEditorModal: false });
 	    }
 	    saveToLocalStorage(recipes) {
-	        localStorage.setItem("recipes", JSON.stringify(recipes));
+	        localStorage.setItem("_idahogurl_recipes", JSON.stringify(recipes));
 	    }
 	    componentWillMount() {
 	        this.initialize();
 	        this.setState({ recipes: this.loadLocalStorage() });
 	    }
 	    initialize() {
-	        if (localStorage.getItem("recipes") === null) {
+	        if (localStorage.getItem("_idahogurl_recipes") === null) {
 	            let recipesToSave = new Array();
 	            recipesToSave.push(new Recipe(1, "Cookie Salad", "Striped Chocolate Shortbread Cookies,Buttermilk,Whipped Cream,Vanilla Pudding," +
 	                "Mandrian Oranges,Pineapple Tidbits"));
@@ -205,7 +203,7 @@
 	        }
 	    }
 	    loadLocalStorage() {
-	        return JSON.parse(localStorage.getItem("recipes"));
+	        return JSON.parse(localStorage.getItem("_idahogurl_recipes"));
 	    }
 	    render() {
 	        let recipeList = this.state.recipes.map(recipe => {
